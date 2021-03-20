@@ -1,6 +1,14 @@
 const express = require("express");
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
 const app = express();
 
+dotenv.config({ path: "./config.env" });
+
+const PORT = process.env.PORT;
+
+require("./db/conn");
+//Midlle Ware
 const middleware = (req, res, next) => {
   console.log(`Hello my MiddleWire`);
   next();
@@ -26,4 +34,5 @@ app.get("/signup", (req, res) => {
   res.send(`Hello World from Sign UP`);
 });
 
-app.listen(3000, () => console.log(`Listening at port 3000`));
+app.listen(PORT, () => console.log(`Listening at port at ${PORT}`));
+//
