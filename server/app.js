@@ -6,6 +6,7 @@ const app = express();
 dotenv.config({ path: "./config.env" });
 
 const PORT = process.env.PORT;
+// const User = require("./model/userSchema");
 
 require("./db/conn");
 //Midlle Ware
