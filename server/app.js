@@ -8,7 +8,8 @@ dotenv.config({ path: "./config.env" });
 // const User = require("./model/userSchema");
 
 require("./db/conn");
-
+//express json is converted into object
+app.use(express.json());
 //we will link the router files to make our route easy
 app.use(require("./router/auth"));
 const PORT = process.env.PORT;
