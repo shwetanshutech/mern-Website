@@ -5,10 +5,13 @@ const app = express();
 
 dotenv.config({ path: "./config.env" });
 
-const PORT = process.env.PORT;
 // const User = require("./model/userSchema");
 
 require("./db/conn");
+
+//we will link the router files to make our route easy
+app.use(require("./router/auth"));
+const PORT = process.env.PORT;
 //Midlle Ware
 const middleware = (req, res, next) => {
   console.log(`Hello my MiddleWire`);
