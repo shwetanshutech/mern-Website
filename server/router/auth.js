@@ -5,10 +5,36 @@ router.get("/", (req, res) => {
   res.send(`Hello world from server router`);
 });
 
+require("../db/conn");
+const User = require("../model/userSchema");
+
 router.post("/register", (req, res) => {
-  console.log(req.body);
-  res.json({ message: req.body });
+  const { name, email, phone, work, password, cpassword } = req.body;
+  if (!name || !email || !phone || !work || !password || !cpassword) {
+    return res.status(422).json({
+      error: `Please fill the required information properly`,
+    });
+  }
+
+  User.findOne({ email: email })
+    .then((userExists) => {
+      if (userExists) {
+        return res.status(422).json({
+          error: `Email Already Exists`,
+        });
+      }
+
+      const user = new User({ name, email, phone, work, password, cpassword });
+      user
+        .save()
+        .then(() => {
+          res.status(201).json({ message: `User Registered Successfully` });
+        })
+        .catch((err) => res.send(500).json({ err: ` Failed to Register` }));
+    })
+    .catch((err) => console.log(err));
 });
+
 module.exports = router;
 // {
 //     "name":"shwetanshu",
