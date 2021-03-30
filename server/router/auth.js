@@ -7,32 +7,57 @@ router.get("/", (req, res) => {
 
 require("../db/conn");
 const User = require("../model/userSchema");
+//USING PROMISES
+// router.post("/register", (req, res) => {
+//   const { name, email, phone, work, password, cpassword } = req.body;
+//   if (!name || !email || !phone || !work || !password || !cpassword) {
+//     return res.status(422).json({
+//       error: `Please fill the required information properly`,
+//     });
+//   }
 
-router.post("/register", (req, res) => {
+//   User.findOne({ email: email })
+//     .then((userExists) => {
+//       if (userExists) {
+//         return res.status(422).json({
+//           error: `Email Already Exists`,
+//         });
+//       }
+
+//       const user = new User({ name, email, phone, work, password, cpassword });
+//       user
+//         .save()
+//         .then(() => {
+//           res.status(201).json({ message: `User Registered Successfully` });
+//         })
+//         .catch((err) => res.send(500).json({ err: ` Failed to Register` }));
+//     })
+//     .catch((err) => console.log(err));
+// });
+
+//USING ASYNC
+
+router.post("/register", async (req, res) => {
   const { name, email, phone, work, password, cpassword } = req.body;
   if (!name || !email || !phone || !work || !password || !cpassword) {
     return res.status(422).json({
       error: `Please fill the required information properly`,
     });
   }
+  try {
+    const userExists = await User.findOne({ email: email });
+    if (userExists) {
+      return res.status(422).json({
+        error: `Email Already Exists`,
+      });
+    }
+    const user = new User({ name, email, phone, work, password, cpassword });
+    await user.save();
 
-  User.findOne({ email: email })
-    .then((userExists) => {
-      if (userExists) {
-        return res.status(422).json({
-          error: `Email Already Exists`,
-        });
-      }
-
-      const user = new User({ name, email, phone, work, password, cpassword });
-      user
-        .save()
-        .then(() => {
-          res.status(201).json({ message: `User Registered Successfully` });
-        })
-        .catch((err) => res.send(500).json({ err: ` Failed to Register` }));
-    })
-    .catch((err) => console.log(err));
+    res.status(201).json({ message: `User Registered Successfully` });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 module.exports = router;
