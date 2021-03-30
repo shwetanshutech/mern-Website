@@ -35,7 +35,7 @@ const User = require("../model/userSchema");
 //     .catch((err) => console.log(err));
 // });
 
-//USING ASYNC
+//USING ASYNC-Await
 
 router.post("/register", async (req, res) => {
   const { name, email, phone, work, password, cpassword } = req.body;
@@ -60,7 +60,30 @@ router.post("/register", async (req, res) => {
   }
 });
 
+//Login Route
+router.post("/signin", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res
+        .status(422)
+        .json({ error: `Please fill the required information properly` });
+    }
+    const userLogin = await User.findOne({ email: email });
+    console.log(userLogin);
+    if (!userLogin) {
+      res.status(400).json({ message: `user error` });
+    } else {
+      res.status(201).json({ message: `user logined successfully` });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 module.exports = router;
+
+//sample signup data
 // {
 //     "name":"shwetanshu",
 //     "email": "shwetanshu@web.com",
