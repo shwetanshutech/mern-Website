@@ -52,6 +52,7 @@ router.post("/register", async (req, res) => {
       });
     }
     const user = new User({ name, email, phone, work, password, cpassword });
+    //method for becrypt,hashing has to be done
     await user.save();
 
     res.status(201).json({ message: `User Registered Successfully` });
