@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const bcrypt = require("bcryptjs");
 router.get("/", (req, res) => {
   res.send(`Hello world from server router`);
 });
@@ -50,7 +50,7 @@ router.post("/register", async (req, res) => {
       return res.status(422).json({
         error: `Email Already Exists`,
       });
-    } else if (passowrd != cpassword) {
+    } else if (password != cpassword) {
       return res.status(422).json({
         error: `Passwords did not match`,
       });
@@ -76,12 +76,17 @@ router.post("/signin", async (req, res) => {
         .json({ error: `Please fill the required information properly` });
     }
     const userLogin = await User.findOne({ email: email });
-    console.log(userLogin);
-    if (!userLogin) {
-      res.status(400).json({ message: `user error` });
+    if (userLogin) {
+      const isMatch = await bcrypt.compare(password, userLogin.password);
+      if (!isMatch) {
+        res.status(400).json({ message: `Invalid credentials pass` });
+      } else {
+        res.status(201).json({ message: `User Logined Successfully` });
+      }
     } else {
-      res.status(201).json({ message: `user logined successfully` });
+      res.status(400).json({ message: `Invalid credentials` });
     }
+    //console.log(userLogin);
   } catch (err) {
     console.log(err);
   }
