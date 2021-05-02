@@ -50,12 +50,17 @@ router.post("/register", async (req, res) => {
       return res.status(422).json({
         error: `Email Already Exists`,
       });
-    }
-    const user = new User({ name, email, phone, work, password, cpassword });
-    //method for becrypt,hashing has to be done
-    await user.save();
+    } else if (passowrd != cpassword) {
+      return res.status(422).json({
+        error: `Passwords did not match`,
+      });
+    } else {
+      const user = new User({ name, email, phone, work, password, cpassword });
+      //method for becrypt,hashing has to be done
+      await user.save();
 
-    res.status(201).json({ message: `User Registered Successfully` });
+      res.status(201).json({ message: `User Registered Successfully` });
+    }
   } catch (err) {
     console.log(err);
   }
